@@ -7,7 +7,7 @@ interface RenderItemProps {
 const RenderItem: FC<RenderItemProps> = ({item}) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{item?.title}</Text>
+      <Text style={styles.title}>{item?.description}</Text>
       <View style={styles.rowContainer}>
         <Text style={styles.amount}>$ {item?.amount}</Text>
         <Text style={styles.date}>{item?.date}</Text>

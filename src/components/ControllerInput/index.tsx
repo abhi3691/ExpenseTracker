@@ -35,7 +35,6 @@ export function ControllerInput<T extends FieldValues>(
       control={props.control}
       name={props.name}
       render={({field: {onChange, onBlur, value}, fieldState: {error}}) => {
-        console.log('typeof value', typeof value);
         return (
           <View style={styles.container}>
             <View style={[styles.input, error && styles.errorInput]}>

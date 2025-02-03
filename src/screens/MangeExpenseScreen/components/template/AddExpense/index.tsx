@@ -10,11 +10,10 @@ import {AppDispatch, RootState} from '../../../../../store';
 import {useDispatch, useSelector} from 'react-redux';
 import {createTransaction} from '../../../../../store/slices/transactionsSlice';
 import {getUser} from '../../../../../utils/mmkvHelper';
-import dayJs from 'dayjs';
 import dayjs from 'dayjs';
 const AddExpense = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const user = useSelector((state: RootState) => state.auth.user); // Get logged-in user
+  const user = useSelector((state: RootState) => state.auth.user);
   const {control, handleSubmit} = useForm({
     resolver: zodResolver(expenseSchema),
     defaultValues: {

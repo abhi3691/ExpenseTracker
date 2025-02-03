@@ -32,8 +32,6 @@ export const initDB = async () => {
           FOREIGN KEY(userId) REFERENCES users(id)
         );`,
     );
-
-    console.log('Tables initialized');
   } catch (error) {
     console.error('DB Init Error:', error);
   }
@@ -45,20 +43,32 @@ export const registerUser = async (
   password: string,
 ) => {
   try {
-    let result = await db.transaction(tx => {
-      tx.executeSql(
-        'INSERT INTO users (name, email, password) VALUES (?, ?, ?);',
-        [name, email, password],
-      );
+    let userId: number | null = null;
+
+    await new Promise<void>((resolve, reject) => {
+      db.transaction(tx => {
+        tx.executeSql(
+          'INSERT INTO users (name, email, password) VALUES (?, ?, ?);',
+          [name, email, password],
+          (tx, results) => {
+            if (results.insertId) {
+              userId = results.insertId;
+              resolve();
+            } else {
+              reject(new Error('User registration failed'));
+            }
+          },
+          (tx, error) => reject(error),
+        );
+      });
     });
 
-    return result;
+    return userId ? {id: userId, name, email} : null;
   } catch (error) {
     console.error('Register Error:', error);
     return null;
   }
 };
-
 export const loginUser = async (email: string, password: string) => {
   try {
     let result: any = await new Promise((resolve, reject) => {
@@ -87,6 +97,7 @@ export const addTransaction = async (
   date: string,
 ) => {
   try {
+    console.log('addTransaction', userId, amount, description, date);
     await db.executeSql(
       'INSERT INTO transactions (userId, amount, description, date) VALUES (?, ?, ?, ?);',
       [userId, amount, description, date],

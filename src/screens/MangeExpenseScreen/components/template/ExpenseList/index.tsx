@@ -17,7 +17,6 @@ const ExpenseList = () => {
     (state: RootState) => state.transactions,
   );
   const user = useSelector((state: RootState) => state.auth.user);
-
   useEffect(() => {
     if (user?.id) {
       dispatch(fetchTransactions(user.id));

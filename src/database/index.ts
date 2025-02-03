@@ -88,8 +88,6 @@ export const loginUser = async (email: string, password: string) => {
     return null;
   }
 };
-
-// Add a transaction for a user
 export const addTransaction = async (
   userId: number,
   amount: number,
@@ -97,15 +95,28 @@ export const addTransaction = async (
   date: string,
 ) => {
   try {
-    console.log('addTransaction', userId, amount, description, date);
-    await db.executeSql(
-      'INSERT INTO transactions (userId, amount, description, date) VALUES (?, ?, ?, ?);',
-      [userId, amount, description, date],
-    );
-    return true;
+    const result: any = await new Promise((resolve, reject) => {
+      db.transaction(tx => {
+        tx.executeSql(
+          'INSERT INTO transactions (userId, amount, description, date) VALUES (?, ?, ?, ?);',
+          [userId, amount, description, date],
+          (tx, results) => {
+            const insertedId = results.insertId;
+            if (insertedId) {
+              resolve({success: true, insertedId});
+            } else {
+              reject(new Error('Transaction insert failed'));
+            }
+          },
+          (tx, error) => reject(error),
+        );
+      });
+    });
+
+    return result;
   } catch (error) {
     console.error('Transaction Error:', error);
-    return false;
+    return {success: false, error: error.message};
   }
 };
 

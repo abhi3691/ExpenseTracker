@@ -51,11 +51,13 @@ export const createTransaction = createAsyncThunk(
     {rejectWithValue},
   ) => {
     try {
-      const success = await addTransaction(userId, amount, description, date);
-      if (!success) {
-        throw new Error('Failed to add transaction');
+      const result = await addTransaction(userId, amount, description, date);
+
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to add transaction');
       }
-      return {userId, amount, description, date};
+
+      return {id: result.insertedId, userId, amount, description, date};
     } catch (error: any) {
       return rejectWithValue(error.message);
     }

@@ -111,19 +111,30 @@ export const addTransaction = async (
 
 export const getUserTransactions = async (userId: number) => {
   try {
-    const result = await db.executeSql(
-      'SELECT * FROM transactions WHERE userId = ? ORDER BY date DESC;',
-      [userId],
-    );
+    // Get the result of the SQL query
+    const result = await new Promise<any>((resolve, reject) => {
+      db.readTransaction(tx => {
+        tx.executeSql(
+          'SELECT * FROM transactions WHERE userId = ? ORDER BY date DESC;',
+          [userId],
+          (tx, results) => resolve(results), // resolve with results
+          (tx, error) => reject(error), // reject on error
+        );
+      });
+    });
 
-    let transactions = [];
-    for (let i = 0; i < result[0].rows.length; i++) {
-      transactions.push(result[0].rows.item(i));
+    // Create an empty array to store transactions
+    let transactions: any[] = [];
+
+    // Loop through the rows returned by the query
+    for (let i = 0; i < result.rows.length; i++) {
+      transactions.push(result.rows.item(i));
     }
-    return transactions;
+
+    return transactions; // Return the transactions
   } catch (error) {
     console.error('Fetch Transactions Error:', error);
-    return [];
+    return []; // Return an empty array if an error occurs
   }
 };
 

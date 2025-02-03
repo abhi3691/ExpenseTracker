@@ -9,9 +9,11 @@ export const expenseSchema = z.object({
     .nonempty('Expense name is required')
     .max(50, 'Expense name must be at most 50 characters'),
 
-  amount: z.string({
-    required_error: 'Amount is required',
-  }),
+  amount: z
+    .string({
+      required_error: 'Amount is required',
+    })
+    .regex(/^\d+(\.\d+)?$/, 'Amount must be a number'),
   date: z.string({
     required_error: 'Date is required',
   }),

@@ -5,6 +5,7 @@ interface RenderItemProps {
   item: Record<string, any>;
 }
 const RenderItem: FC<RenderItemProps> = ({item}) => {
+  console.log('item', item);
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{item?.description}</Text>

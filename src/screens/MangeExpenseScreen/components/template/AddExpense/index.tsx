@@ -18,7 +18,7 @@ const AddExpense = () => {
     resolver: zodResolver(expenseSchema),
     defaultValues: {
       description: '',
-      amount: 0,
+      amount: '',
       date: dayjs().format('DD-MM-YYYY'),
     },
   });
@@ -26,7 +26,7 @@ const AddExpense = () => {
   const onSubmit = (data: expenseSchema) => {
     let variables = {
       description: data.description,
-      amount: parseFloat(data.amount),
+      amount: data.amount,
       date: data.date,
       userId: user?.id,
     };

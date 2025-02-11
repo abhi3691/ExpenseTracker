@@ -1,9 +1,8 @@
 import {View, FlatList} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import RenderItem from '../../organization/RenderItem';
 import styles from './styles';
 import {useDispatch, useSelector} from 'react-redux';
-import {getUserTransactions} from '../../../../../database';
 import {AppDispatch, RootState} from '../../../../../store';
 import {fetchTransactions} from '../../../../../store/slices/transactionsSlice';
 import {ActivityIndicator} from 'react-native';
